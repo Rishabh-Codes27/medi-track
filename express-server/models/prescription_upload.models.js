@@ -14,7 +14,6 @@ const prescriptionUploadSchema = new Schema(
       enum: ["pending", "processed", "error"],
       default: "pending",
     },
-    extracted_text: { type: String },
     uploaded_at: { type: Date, default: Date.now },
   },
   { timestamps: false }
