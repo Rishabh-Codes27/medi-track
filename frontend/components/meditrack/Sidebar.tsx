@@ -61,9 +61,11 @@ const Sidebar = () => {
 
           <div className="border- w-5/6  rounded-xl mb-5 px-4 py-2 bg-black/30">
             <div className="">
-              <Avatar className="mb-2">
-                <AvatarFallback>RD</AvatarFallback>
-              </Avatar>
+              <a href="/medi-track/account">
+                <Avatar className="mb-2">
+                  <AvatarFallback>RD</AvatarFallback>
+                </Avatar>
+              </a>
               <Skeleton className="w-4/6 h-[20px] rounded-full" />
             </div>
           </div>
