@@ -1,34 +1,31 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-import requests
-from PIL import Image
-import io
-from models.image_processor import ImageProcessor
+from ..app.models.document_processor import DocumentProcessor
+import os
 
 app = FastAPI()
 
-class ImageURL(BaseModel):
-    url: str
+class DocumentPath(BaseModel):
+    path: str  # Local file path to image or PDF
 
-image_processor = ImageProcessor()
+document_processor = DocumentProcessor()
 
-@app.post("/process-image/")
-async def process_image(image_url: ImageURL):
+@app.post("/process-document/")
+async def process_document(doc_path: DocumentPath):
     try:
-        response = requests.get(image_url.url, timeout=10)
-        response.raise_for_status()
+        if not os.path.exists(doc_path.path):
+            raise HTTPException(status_code=404, detail="File not found")
+        if not os.path.isfile(doc_path.path):
+            raise HTTPException(status_code=400, detail="Path is not a file")
 
-        image = Image.open(io.BytesIO(response.content))
+        result = document_processor.process_document(doc_path.path)
+        return {"result": result}
 
-        result = image_processor.process(image)
-
-        return result
-
-    except requests.exceptions.RequestException as e:
-        raise HTTPException(status_code=400, detail=f"Error downloading image: {str(e)}")
+    except HTTPException as e:
+        raise e
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error processing image: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error processing document: {str(e)}")
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000) 
+    uvicorn.run(app, host="0.0.0.0", port=8000)
