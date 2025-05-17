@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
-  createMedication,
+  saveMedicationSchedule,
+  getMedicationSchedule,
   getMedicationById,
   getAllMedicationsByUser,
   updateMedication,
@@ -9,7 +10,8 @@ import {
 
 const router = Router();
 
-router.post("/", createMedication);
+router.post("/", saveMedicationSchedule);
+router.get("/", getMedicationSchedule);  
 router.get("/user/:userId", getAllMedicationsByUser);
 router.get("/:id", getMedicationById);
 router.put("/:id", updateMedication);

@@ -2,18 +2,91 @@ import { MedicationSchedule } from "../models/medication_schedule.models.js";
 import { ApiError } from "../utils/ApiError.utils.js";
 import { ApiResponse } from "../utils/ApiResponse.utils.js";
 
-export const createMedication = async (req, res, next) => {
+// POST /schedule
+export const saveMedicationSchedule = async (req, res, next) => {
   try {
-    const medication = await MedicationSchedule.create(req.body);
-    return res
-      .status(201)
-      .json(new ApiResponse(201, medication, "Schedule created"));
-  } catch (error) {
-    next(
-      new ApiError(500, "Failed to create medication schedule", [error.message])
+    const {
+      user_id,
+      med_name,
+      dosage,
+      time,
+      frequency,
+      start_date,
+      end_date,
+      notes,
+    } = req.body;
+
+    // 1. Validate required fields
+    if (
+      !user_id ||
+      !med_name ||
+      !dosage ||
+      !time ||
+      !frequency ||
+      !start_date ||
+      !end_date
+    ) {
+      throw new ApiError(400, "Missing required fields");
+    }
+
+    // 2. Ensure valid frequency
+    if (!["daily", "weekly"].includes(frequency)) {
+      throw new ApiError(400, "Invalid frequency value");
+    }
+
+    // 3. Parse start/end dates (string to Date)
+    const parsedStartDate = new Date(start_date);
+    const parsedEndDate = new Date(end_date);
+    if (isNaN(parsedStartDate) || isNaN(parsedEndDate)) {
+      throw new ApiError(400, "Invalid date format");
+    }
+
+    // 4. Upsert medication schedule (one per user + med_name)
+    const saved = await MedicationSchedule.findOneAndUpdate(
+      { user_id, med_name },
+      {
+        dosage,
+        time,
+        frequency,
+        start_date: parsedStartDate,
+        end_date: parsedEndDate,
+        notes,
+      },
+      { new: true, upsert: true, setDefaultsOnInsert: true }
     );
+
+    return res.status(200).json(new ApiResponse(200, saved, "Schedule saved"));
+  } catch (error) {
+    next(new ApiError(500, "Failed to save schedule", [error.message]));
   }
 };
+
+// GET /schedule?user_id=xxx&date=2025-05-17
+export const getMedicationSchedule = async (req, res, next) => {
+  try {
+    const { user_id, date } = req.query;
+
+    if (!user_id) {
+      throw new ApiError(400, "Missing user_id");
+    }
+
+    const filter = { user_id };
+
+    if (date) {
+      const parsed = new Date(date);
+      if (isNaN(parsed)) throw new ApiError(400, "Invalid date");
+      filter.start_date = { $lte: parsed };
+      filter.end_date = { $gte: parsed };
+    }
+
+    const schedules = await MedicationSchedule.find(filter);
+    return res.status(200).json(new ApiResponse(200, schedules));
+  } catch (error) {
+    next(new ApiError(500, "Failed to fetch schedule", [error.message]));
+  }
+};
+
+
 
 export const getAllMedicationsByUser = async (req, res, next) => {
   try {
