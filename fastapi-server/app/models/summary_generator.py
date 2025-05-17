@@ -28,6 +28,10 @@ class SummaryGenerator:
         Schema:
         {{
           "Medicines": [string, ...],
+          "Duration": {{
+            "string": str(integer),
+             ...
+          }}
           "Intake per week": [string, ...],
           "Timings per week": {{
             "string": [string, ...],
@@ -36,6 +40,7 @@ class SummaryGenerator:
         }}
 
         - "Medicines": List of medication names.
+        - "Duration": A dictionary with only the medicine names as reference id and the element being the str(integer) duration of the particular medicine.
         - "Intake per week": List of intake instructions (e.g., "14 tablets", "7 doses") corresponding to each medicine.
         - "Timings per week": Dictionary where each key is a medicine name, and the value is a list of specific intake times (e.g., ["Monday 8:00 AM", "Monday 8:00 PM", ...]). Use 'N/A' if timings are not specified.
 
