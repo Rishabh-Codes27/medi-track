@@ -4,8 +4,8 @@ import path from "path";
 import { PrescriptionUpload } from "../models/prescription_upload.models.js";
 import { MedicationSchedule } from "../models/medication_schedule.models.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.utils.js";
-import { ApiError } from "../utils/ApiError.js";
-import { ApiResponse } from "../utils/ApiResponse.js";
+import { ApiError } from "../utils/ApiError.utils.js";
+import { ApiResponse } from "../utils/ApiResponse.utils.js";
 
 export const uploadPrescription = async (req, res, next) => {
   try {

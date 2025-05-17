@@ -1,4 +1,4 @@
-import IntakeLog from "../models/intake_log.models.js";
+import { IntakeLog } from "../models/intake_log.models.js";
 import { ApiError } from "../utils/ApiError.utils.js";
 import { ApiResponse } from "../utils/ApiResponse.utils.js";
 
@@ -32,9 +32,13 @@ export const getIntakeById = async (req, res, next) => {
 
 export const updateIntakeVerification = async (req, res, next) => {
   try {
-    const updated = await IntakeLog.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const updated = await IntakeLog.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
     if (!updated) throw new ApiError(404, "Intake log not found");
-    return res.status(200).json(new ApiResponse(200, updated, "Intake updated"));
+    return res
+      .status(200)
+      .json(new ApiResponse(200, updated, "Intake updated"));
   } catch (error) {
     next(error);
   }
@@ -44,7 +48,9 @@ export const deleteIntakeLog = async (req, res, next) => {
   try {
     const deleted = await IntakeLog.findByIdAndDelete(req.params.id);
     if (!deleted) throw new ApiError(404, "Intake log not found");
-    return res.status(200).json(new ApiResponse(200, deleted, "Intake log deleted"));
+    return res
+      .status(200)
+      .json(new ApiResponse(200, deleted, "Intake log deleted"));
   } catch (error) {
     next(error);
   }

@@ -1,4 +1,4 @@
-import User from "../models/user.models.js";
+import { User } from "../models/user.models.js";
 import { ApiError } from "../utils/ApiError.utils.js";
 import { ApiResponse } from "../utils/ApiResponse.utils.js";
 
@@ -34,7 +34,7 @@ export const createUser = async (req, res, next) => {
 };
 
 // LOGIN USER
-export const loginUser = asyncHandler(async (req, res) => {
+export const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   // 1. Validate
@@ -59,22 +59,22 @@ export const loginUser = asyncHandler(async (req, res) => {
   await user.save({ validateBeforeSave: false });
 
   res
-      .status(201)
-      .cookie("accessToken", accessToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        samesite: "strict",
-        maxAge: 1000 * 60 *15,
-      })
-      .cookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-      })
+    .status(201)
+    .cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      samesite: "strict",
+      maxAge: 1000 * 60 * 15,
+    })
+    .cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+    })
     .json(new ApiResponse(200, user, "Login successful"));
-});
+};
 
 // LOGOUT USER
-export const logoutUser = asyncHandler(async (req, res) => {
+export const logoutUser = async (req, res) => {
   await User.findByIdAndUpdate(req.user._id, { refreshToken: "" });
 
   res
@@ -82,10 +82,10 @@ export const logoutUser = asyncHandler(async (req, res) => {
     .clearCookie("refreshToken")
     .status(200)
     .json(new ApiResponse(200, null, "Logout successful"));
-});
+};
 
 // REFRESH ACCESS TOKEN
-export const refreshAccessToken = asyncHandler(async (req, res) => {
+export const refreshAccessToken = (async (req, res) => {
   const incomingRefreshToken =
     req.cookies?.refreshToken || req.body.refreshToken;
 
@@ -116,7 +116,7 @@ export const refreshAccessToken = asyncHandler(async (req, res) => {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         samesite: "strict",
-        maxAge: 1000 * 60 *15,
+        maxAge: 1000 * 60 * 15,
       })
       .cookie("refreshToken", refreshToken, {
         httpOnly: true,

@@ -18,7 +18,7 @@ app.use(morgan("dev"));
 //import routers
 import userRoutes from "./routes/user.routes.js";
 import medicationRoutes from "./routes/medication.routes.js";
-import prescriptionRoutes from "./routes/prescription.route.js";
+import prescriptionRoutes from "./routes/presecription.routes.js";
 import intakeRoutes from "./routes/intake.routes.js";
 
 //declaring routers
