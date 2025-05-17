@@ -11,7 +11,7 @@ const medicationScheduleSchema = new Schema(
     med_name: { type: String, required: true, trim: true },
     dosage: { type: String, required: true, trim: true },
     time: { type: String, required: true }, // e.g., "08:00 AM"
-    freqency: { type: String, enum: ["daily", "weekly"], required: true }, // daily, weekly, etc.
+    frequency: { type: String, enum: ["daily", "weekly"], required: true }, // daily, weekly, etc.
     start_date: { type: Date, required: true },
     end_date: { type: Date, required: true },
     notes: { type: String }

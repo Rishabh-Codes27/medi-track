@@ -34,45 +34,45 @@ const userSchema = new Schema(
   { timestamps: true }
 );
 
-// 🔒 Pre-save hook for password hashing
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
-  this.password = await bcrypt.hash(this.password, 10);
-  next();
-});
+// // 🔒 Pre-save hook for password hashing
+// userSchema.pre("save", async function (next) {
+//   if (!this.isModified("password")) return next();
+//   this.password = await bcrypt.hash(this.password, 10);
+//   next();
+// });
 
 // 🔐 Compare passwords
 userSchema.methods.isPasswordCorrect = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
 
-// 🔑 Access token
-userSchema.methods.generateAccessToken = function () {
-  return jwt.sign(
-    {
-      _id: this._id,
-      username: this.username,
-      fullname: this.fullname,
-      email: this.email,
-    },
-    process.env.ACCESS_TOKEN_KEY,
-    {
-      expiresIn: process.env.ACCESS_TOKEN_EXPIRE,
-    }
-  );
-};
+// // 🔑 Access token
+// userSchema.methods.generateAccessToken = function () {
+//   return jwt.sign(
+//     {
+//       _id: this._id,
+//       username: this.username,
+//       fullname: this.fullname,
+//       email: this.email,
+//     },
+//     process.env.ACCESS_TOKEN_KEY,
+//     {
+//       expiresIn: process.env.ACCESS_TOKEN_EXPIRE,
+//     }
+//   );
+// };
 
-// 🔄 Refresh token
-userSchema.methods.generateRefreshToken = function () {
-  return jwt.sign(
-    {
-      _id: this._id,
-    },
-    process.env.REFRESH_TOKEN_KEY,
-    {
-      expiresIn: process.env.REFRESH_TOKEN_EXPIRE,
-    }
-  );
-};
+// // 🔄 Refresh token
+// userSchema.methods.generateRefreshToken = function () {
+//   return jwt.sign(
+//     {
+//       _id: this._id,
+//     },
+//     process.env.REFRESH_TOKEN_KEY,
+//     {
+//       expiresIn: process.env.REFRESH_TOKEN_EXPIRE,
+//     }
+//   );
+// };
 
 export const User = mongoose.model("User", userSchema);

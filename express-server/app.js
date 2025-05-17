@@ -14,6 +14,10 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
 app.use(morgan("dev"));
+app.use((req, res, next) => {
+    console.log("Headers:", req.headers["content-type"]);
+    next();
+  });
 
 //import routers
 import userRoutes from "./routes/user.routes.js";

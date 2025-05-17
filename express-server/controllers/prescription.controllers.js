@@ -118,7 +118,7 @@ export const manualPrescription = async (req, res, next) => {
   try {
     const {
       user_id,
-      medi_name,
+      med_name,
       dosage,
       frequency,
       start_date,
@@ -130,7 +130,7 @@ export const manualPrescription = async (req, res, next) => {
     // 1. Validation
     if (
       !user_id ||
-      !medi_name ||
+      !med_name ||
       !dosage ||
       !frequency ||
       !start_date ||
@@ -143,9 +143,9 @@ export const manualPrescription = async (req, res, next) => {
     // 2. Save medication entry directly
     const savedMedication = await MedicationSchedule.create({
       user_id,
-      medi_name,
+      med_name,
       dosage,
-      recurrence,
+      frequency,
       start_date,
       end_date,
       notes,
@@ -168,12 +168,14 @@ export const manualPrescription = async (req, res, next) => {
 
 export const getAllPrescriptionsByUser = async (req, res, next) => {
   try {
-    if(!req.params.userId){
-      throw new ApiError(400,"user id required")
+    console.log("get all prescription called");
+    if (!req.params.userId) {
+      throw new ApiError(400, "user id required");
     }
     const results = await PrescriptionUpload.find({
       user_id: req.params.userId,
     });
+    console.log(results);
     return res.status(200).json(new ApiResponse(200, results));
   } catch (error) {
     next(error);
