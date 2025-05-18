@@ -3,7 +3,6 @@ from pydantic import BaseModel
 import requests
 from PIL import Image
 import io
-from .models.image_processor import ImageProcessor
 from ..app.models.document_processor import DocumentProcessor
 from ..app.models.summary_generator import SummaryGenerator
 
