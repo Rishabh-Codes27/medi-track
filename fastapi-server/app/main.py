@@ -3,31 +3,29 @@ from pydantic import BaseModel
 import requests
 from PIL import Image
 import io
-from models.image_processor import ImageProcessor
+from .models.image_processor import ImageProcessor
+import os
 
 app = FastAPI()
 
-class ImageURL(BaseModel):
-    url: str
+class FilePathModel(BaseModel):
+    file_path: str
 
 image_processor = ImageProcessor()
 
 @app.post("/process-image/")
-async def process_image(image_url: ImageURL):
+async def process_image(data: FilePathModel):
     try:
-        response = requests.get(image_url.url, timeout=10)
-        response.raise_for_status()
+        if not os.path.exists(data.file_path):
+            raise HTTPException(status_code=404, detail="File not found on server")
 
-        image = Image.open(io.BytesIO(response.content))
+        image = Image.open(data.file_path)
 
         result = image_processor.process(image)
+        return {"result": result}
 
-        return result
-
-    except requests.exceptions.RequestException as e:
-        raise HTTPException(status_code=400, detail=f"Error downloading image: {str(e)}")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error processing image: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error processing file: {str(e)}")
 
 if __name__ == "__main__":
     import uvicorn

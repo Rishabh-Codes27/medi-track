@@ -18,7 +18,7 @@ export const uploadPrescription = async (req, res, next) => {
 
     // 2. Call FastAPI OCR service
     const fastApiResponse = await axios.post(
-      "http://localhost:8000/process-document/",
+      "http://localhost:8000/process-image/",
       { file_path: localFilePath }
     );
 
