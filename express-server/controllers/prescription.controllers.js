@@ -18,18 +18,19 @@ export const uploadPrescription = async (req, res, next) => {
 
     // 2. Call FastAPI OCR service
     const fastApiResponse = await axios.post(
-      "http://localhost:8000/process-document/",
-      { file_path: localFilePath }
+      "http://localhost:8000/process-image/",
+      { url: `http://localhost:5000/temp/${req.file.filename}` }
     );
 
-    //TODO: change it according to fastapi server responsefrequency
     const ocrData = fastApiResponse?.data?.result;
 
-    if (!ocrData) {
-      throw new ApiError(500, "OCR failed or no result returned from FastAPI");
+    if (!ocrData?.description) {
+      throw new ApiError(
+        500,
+        "OCR failed or incomplete data returned from FastAPI"
+      );
     }
 
-    // 3. Send OCR result to frontend for confirmation
     return res
       .status(200)
       .json(new ApiResponse(200, { ocrData }, "Confirm OCR data on frontend"));

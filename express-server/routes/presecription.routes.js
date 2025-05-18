@@ -9,10 +9,16 @@ import {
   updatePrescriptionStatus,
   deletePrescription,
 } from "../controllers/prescription.controllers.js";
+import fs from "fs";
+
 
 const router = Router();
 
-router.post("/", upload.single("file"), uploadPrescription);
+const dir = "./public/temp";
+if (!fs.existsSync(dir)) {
+  fs.mkdirSync(dir, { recursive: true });
+}
+router.post("/", upload.single("prescription"), uploadPrescription);
 router.post("/confirm", confirmAndSavePrescription);
 router.post("/manual", manualPrescription);
 router.get("/user/:userId", getAllPrescriptionsByUser);

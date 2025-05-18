@@ -1,8 +1,12 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
+import requests
+from PIL import Image
+import io
+from .models.image_processor import ImageProcessor
 from ..app.models.document_processor import DocumentProcessor
 from ..app.models.summary_generator import SummaryGenerator
-import os
+
 
 app = FastAPI()
 
@@ -11,6 +15,7 @@ class DocumentPath(BaseModel):
 
 document_processor = DocumentProcessor()
 summary_generator = SummaryGenerator()
+
 
 @app.post("/process-document/")
 async def process_document(doc_path: DocumentPath):
