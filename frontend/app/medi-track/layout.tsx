@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import "../globals.css";
+import Sidebar from "@/components/meditrack/Sidebar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,18 +18,15 @@ export const metadata: Metadata = {
   description: "",
 };
 
-export default function RootLayout({
+export default function MediSnapLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
-    </html>
+    <div className="min-h-screen bg-white flex ">
+      <Sidebar />
+      {children}
+    </div>
   );
 }
